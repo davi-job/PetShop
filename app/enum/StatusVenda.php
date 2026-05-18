@@ -1,7 +1,7 @@
 <?php
 
-enum StatusVenda: int {
-    case cancelada = -1;
-    case pendente  = 0;
-    case concluida = 1;
+enum StatusVenda: string {
+    case cancelada = 'cancelada';
+    case pendente  = 'pendente';
+    case concluida = 'concluida';
 }

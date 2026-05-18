@@ -2,8 +2,8 @@
 
 class Vendas {
     private int $id;
-    private int $clienteId;
-    private int $caixaId;
+    private ?int $clienteId;
+    private ?int $caixaId;
     private int $atendenteId;
     private DateTime $data;
     private string $formaPagamento;
