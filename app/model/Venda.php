@@ -1,11 +1,5 @@
 <?php
 
-enum Status: int {
-    case cancelada = -1;
-    case pendente = 0;
-    case concluida = 1;
-}
-
 class Vendas {
     private int $id;
     private int $clienteId;
@@ -13,7 +7,7 @@ class Vendas {
     private int $atendenteId;
     private DateTime $data;
     private string $formaPagamento;
-    private Status $status = Status::pendente;
+    private StatusVenda $status = StatusVenda::pendente;
     private float $total;
 
     public function calcularTotal(array $itens): float {
@@ -24,11 +18,11 @@ class Vendas {
     }
 
     public function cancelar(): void {
-        $this->status = Status::cancelado;
+        $this->status = StatusVenda::cancelada;
     }
 
     public function finalizar(): void {
-        $this->status = Status::concluida;
+        $this->status = StatusVenda::concluida;
     }
 
     // Getters & Setters
@@ -50,5 +44,5 @@ class Vendas {
     public function getFormaPagamento(): string { return $this->formaPagamento; }
     public function setFormaPagamento(string $formaPagamento): void { $this->formaPagamento = $formaPagamento; }
 
-    public function getStatus(): Status { return $this->status; }
+    public function getStatus(): StatusVenda { return $this->status; }
 }

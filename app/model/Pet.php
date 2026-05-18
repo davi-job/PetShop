@@ -1,11 +1,5 @@
 <?php
 
-enum Porte: int {
-    case pequeno = 0;
-    case medio = 1;
-    case grande = 2;
-}
-
 class Pet {
     private int $id;
     private int $clienteId;

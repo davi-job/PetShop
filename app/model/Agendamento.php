@@ -1,28 +1,21 @@
 <?php
 
-enum Status: int {
-    case cancelado = -1;
-    case marcado = 0;
-    case emAndamento = 1;
-    case finalizado = 2;
-}
-
 class Agendamento {
     private int $id;
     private int $petId;
     private int $criadoPor;
     private DateTime $dataHora;
-    private Status $status = Status::marcado;
+    private StatusAgendamento $status = StatusAgendamento::marcado;
     private DateTime $criadoEm;
     
     public function cancelar(): void {
-        $this->status = Status::cancelado;
+        $this->status = StatusAgendamento::cancelado;
     }
     public function iniciar(): void {
-        $this->status = Status::emAndamento;
+        $this->status = StatusAgendamento::emAndamento;
     }
     public function concluir(): void {
-        $this->status = Status::finalizado;
+        $this->status = StatusAgendamento::finalizado;
     }
 
     // Getters & Setters
@@ -37,7 +30,7 @@ class Agendamento {
     public function getDataHora(): \DateTime { return $this->dataHora; }
     public function setDataHora(\DateTime $dataHora): void { $this->dataHora = $dataHora; }
 
-    public function getStatus(): Status { return $this->status; }
+    public function getStatus(): StatusAgendamento { return $this->status; }
 
     public function getCriadoEm(): \DateTime { return $this->criadoEm; }
 }
