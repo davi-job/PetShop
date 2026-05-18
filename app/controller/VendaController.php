@@ -8,6 +8,7 @@ class VendaController extends Controller {
 
         match ($acao) {
             'abrir'          => $this->abrir(),
+            'salvar'         => $this->salvar(),
             'ver'            => $this->ver(),
             'adicionarItem'  => $this->adicionarItem(),
             'removerItem'    => $this->removerItem(),
@@ -28,6 +29,21 @@ class VendaController extends Controller {
 
         $clientes = (new ClienteDAO())->listar();
         $this->render('vendas/form_abrir', ['clientes' => $clientes]);
+    }
+
+    private function salvar(): void {
+        $this->requireRole('atendente', 'gerente');
+
+        $venda = new Vendas();
+        $venda->setAtendenteId(Auth::getUsuario()->getId());
+        $venda->setClienteId(!empty($_POST['cliente_id']) ? (int) $_POST['cliente_id'] : null);
+        $venda->setData(new DateTime());
+        $venda->setTotal(0);
+
+        $dao = new VendaDAO();
+        $id  = $dao->salvar($venda);
+
+        $this->redirect('?page=vendas&acao=ver&id=' . $id);
     }
 
     private function ver(): void {

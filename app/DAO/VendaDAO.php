@@ -2,18 +2,20 @@
 
 class VendaDAO extends DAO {
 
-    public function salvar(Vendas $venda): void {
+    public function salvar(Vendas $venda): int {
         $stmt = $this->conn->prepare(
             "INSERT INTO venda (cliente_id, atendente_id, forma_pagamento, status, total)
-             VALUES (?, ?, ?, ?, ?)"
+             VALUES (?, ?, ?, ?, ?)
+             RETURNING id"
         );
         $stmt->execute([
             $venda->getClienteId() ?: null,
             $venda->getAtendenteId(),
             $venda->getFormaPagamento(),
-            $venda->getStatus()->name,
+            $venda->getStatus()->value,
             $venda->getTotal(),
         ]);
+        return (int) $stmt->fetchColumn();
     }
 
     public function listar(): array {
