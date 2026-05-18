@@ -36,7 +36,5 @@ class ItemVenda {
     public function setPrecoUnitario(float $precoUnitario): void { $this->precoUnitario = $precoUnitario; }
 
     public function getSubtotal(): float { return $this->subtotal; }
-    public function setSubtotal(): void {
-        $this->subtotal = $this->quantidade * $this->subtotal;
-    }
+    public function setSubtotal(float $subtotal): void { $this->subtotal = $subtotal; }
 }

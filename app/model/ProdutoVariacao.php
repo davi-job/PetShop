@@ -44,4 +44,5 @@ class ProdutoVariacao {
      }
 
     public function getEstoque(): int { return $this->estoque; }
+    public function setEstoque(int $estoque): void { $this->estoque = $estoque; }
 }

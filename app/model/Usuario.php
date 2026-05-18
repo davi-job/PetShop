@@ -27,7 +27,8 @@ class Usuario {
     public function getEmail(): string { return $this->email; }
     public function setEmail(string $email): void { $this->email = $email; }
     
-    public function setSenha(string $senha): void {
+    public function getSenhaHash(): string { return $this->senhaHash; }
+    public function setSenhaHash(string $senha): void {
         // todo: hash da $senha
         $this->senhaHash = $senha;
     }

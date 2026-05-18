@@ -45,4 +45,8 @@ class Vendas {
     public function setFormaPagamento(string $formaPagamento): void { $this->formaPagamento = $formaPagamento; }
 
     public function getStatus(): StatusVenda { return $this->status; }
+    public function setStatus(StatusVenda $status): void { $this->status = $status; }
+
+    public function getTotal(): float { return $this->total; }
+    public function setTotal(float $total): void { $this->total = $total; }
 }

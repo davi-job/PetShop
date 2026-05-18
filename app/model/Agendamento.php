@@ -26,11 +26,14 @@ class Agendamento {
     public function setPetId(int $petId): void { $this->petId = $petId; }
 
     public function getCriadoPor(): int { return $this->criadoPor; }
+    public function setCriadoPor(int $criadoPor): void { $this->criadoPor = $criadoPor; }
 
     public function getDataHora(): \DateTime { return $this->dataHora; }
     public function setDataHora(\DateTime $dataHora): void { $this->dataHora = $dataHora; }
 
     public function getStatus(): StatusAgendamento { return $this->status; }
+    public function setStatus(StatusAgendamento $status): void { $this->status = $status; }
 
     public function getCriadoEm(): \DateTime { return $this->criadoEm; }
+    public function setCriadoEm(\DateTime $criadoEm): void { $this->criadoEm = $criadoEm; }
 }
