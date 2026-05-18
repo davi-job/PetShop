@@ -2,10 +2,11 @@
 
 class AgendamentoDAO extends DAO {
 
-    public function salvar(Agendamento $agendamento): void {
+    public function salvar(Agendamento $agendamento): int {
         $stmt = $this->conn->prepare(
             "INSERT INTO agendamento (pet_id, criado_por, data_hora, status)
-             VALUES (?, ?, ?, ?)"
+             VALUES (?, ?, ?, ?)
+             RETURNING id"
         );
         $stmt->execute([
             $agendamento->getPetId(),
@@ -13,6 +14,7 @@ class AgendamentoDAO extends DAO {
             $agendamento->getDataHora()->format('Y-m-d H:i:s'),
             $agendamento->getStatus()->value,
         ]);
+        return (int) $stmt->fetchColumn();
     }
 
     public function listar(): array {
