@@ -63,7 +63,7 @@ class UsuarioDAO extends DAO {
         $u->setNome($row['nome']);
         $u->setEmail($row['email']);
         $u->setSenhaHash($row['senha_hash']);
-        $u->setCargo($row['cargo']);
+        $u->setCargo(constant(Cargo::class . '::' . $row['cargo']));
         $u->setAtivo($row['ativo'] === 't' || $row['ativo'] === true);
         return $u;
     }

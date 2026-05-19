@@ -13,8 +13,8 @@ class Usuario {
         return true;
     }
 
-    public function temPermissao(int $permissaoMinima): bool {
-        return Cargo::{$this->cargo}->value >= $permissaoMinima;
+    public function temPermissao(Cargo $cargo): bool {
+        return Cargo::{$this->cargo} === $cargo;
     }
 
     // Getters & Setters
@@ -34,7 +34,7 @@ class Usuario {
     }
 
     public function getCargo(): string { return $this->cargo; }
-    public function setCargo(Cargo $cargo): void { $this->cargo = Cargo::{$cargo}; }
+    public function setCargo(Cargo $cargo): void { $this->cargo = $cargo->name; }
     
     public function getAtivo(): bool { return $this->ativo; }
     public function setAtivo(bool $ativo): void { $this->ativo = $ativo; }

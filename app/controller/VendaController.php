@@ -49,44 +49,65 @@ class VendaController extends Controller {
     private function ver(): void {
         $venda    = (new VendaDAO())->buscarPorId((int) $_GET['id']);
         $itens    = (new ItemVendaDAO())->listarPorVenda($venda->getId());
-        $produtos = (new ProdutoVariacaoDAO())->listar();
+        $variacoes = (new ProdutoVariacaoDAO())->listar();
+        $produtos  = (new ProdutoDAO())->listar();
+        $servicos  = (new ServicoDAO())->listar();
         $this->render('vendas/ver', [
-            'venda'    => $venda,
-            'itens'    => $itens,
-            'produtos' => $produtos,
+            'venda'     => $venda,
+            'itens'     => $itens,
+            'variacoes' => $variacoes,
+            'produtos'  => $produtos,
+            'servicos'  => $servicos,
         ]);
     }
 
     private function adicionarItem(): void {
-        $vendaId           = (int) $_POST['venda_id'];
-        $produtoVariacaoId = !empty($_POST['produto_variacao_id']) ? (int) $_POST['produto_variacao_id'] : null;
-        $quantidade        = (int) $_POST['quantidade'];
+        $vendaId = (int) $_POST['venda_id'];
+        $tipo    = $_POST['tipo'] ?? '';
 
-        // R8: apenas produto por ora neste fluxo (serviço vem do agendamento)
-        if ($produtoVariacaoId === null) {
-            $_SESSION['flash'] = 'Selecione um produto.';
-            $this->redirect('?page=vendas&acao=ver&id=' . $vendaId);
+        if ($tipo === 'servico') {
+            $servicoId = (int) $_POST['servico_id'];
+            $porte     = Porte::from($_POST['porte']);
+
+            $preco = (new ServicoPrecoDAO())->buscarPorPorte($servicoId, $porte->value);
+            $precoUnitario = $preco ? $preco->getPreco() : 0.0;
+
+            $item = new ItemVenda();
+            $item->setVendaId($vendaId);
+            $item->setServicoId($servicoId);
+            $item->setPorte($porte);
+            $item->setQuantidade(1);
+            $item->setPrecoUnitario($precoUnitario);
+            $item->setSubtotal($precoUnitario);
+
+            (new ItemVendaDAO())->salvar($item);
+            $_SESSION['flash'] = 'Serviço adicionado.';
+
+        } elseif ($tipo === 'produto') {
+            $produtoVariacaoId = (int) $_POST['produto_variacao_id'];
+            $quantidade        = max(1, (int) $_POST['quantidade']);
+
+            $variacao = (new ProdutoVariacaoDAO())->buscarPorId($produtoVariacaoId);
+
+            if (!$variacao->temEstoque($quantidade)) {
+                $_SESSION['flash'] = 'Estoque insuficiente.';
+                $this->redirect('?page=vendas&acao=ver&id=' . $vendaId);
+            }
+
+            $item = new ItemVenda();
+            $item->setVendaId($vendaId);
+            $item->setProdutoVariacaoId($produtoVariacaoId);
+            $item->setQuantidade($quantidade);
+            $item->setPrecoUnitario($variacao->getPreco());
+            $item->setSubtotal($variacao->getPreco() * $quantidade);
+
+            (new ItemVendaDAO())->salvar($item);
+            $_SESSION['flash'] = 'Produto adicionado.';
+
+        } else {
+            $_SESSION['flash'] = 'Selecione o tipo do item.';
         }
 
-        $variacaoDAO = new ProdutoVariacaoDAO();
-        $variacao    = $variacaoDAO->buscarPorId($produtoVariacaoId);
-
-        // R7: verifica estoque antes de adicionar
-        if (!$variacao->temEstoque($quantidade)) {
-            $_SESSION['flash'] = 'Estoque insuficiente.';
-            $this->redirect('?page=vendas&acao=ver&id=' . $vendaId);
-        }
-
-        $item = new ItemVenda();
-        $item->setVendaId($vendaId);
-        $item->setProdutoVariacaoId($produtoVariacaoId);
-        $item->setQuantidade($quantidade);
-        $item->setPrecoUnitario($variacao->getPreco());
-        $item->setSubtotal($variacao->getPreco() * $quantidade);
-
-        (new ItemVendaDAO())->salvar($item);
-
-        $_SESSION['flash'] = 'Item adicionado.';
         $this->redirect('?page=vendas&acao=ver&id=' . $vendaId);
     }
 

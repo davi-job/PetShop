@@ -26,12 +26,12 @@ abstract class Controller {
         }
     }
 
-    protected function requireRole(int ...$roles): void {
+    protected function requireRole(string ...$roles): void {
         $this->requireAuth();
 
         $usuario = Auth::getUsuario();
         foreach ($roles as $role) {
-            if ($usuario->temPermissao($role)) {
+            if ($usuario->temPermissao(Cargo::{$role})) {
                 return;
             }
         }

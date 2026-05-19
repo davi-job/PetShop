@@ -53,8 +53,8 @@ class VendaDAO extends DAO {
         $stmt->execute([
             $venda->getClienteId() ?: null,
             $venda->getCaixaId() ?: null,
-            $venda->getFormaPagamento(),
-            $venda->getStatus()->name,
+            $venda->getFormaPagamento() ?: null,
+            $venda->getStatus()->value,
             $venda->getTotal(),
             $venda->getId(),
         ]);
@@ -72,7 +72,9 @@ class VendaDAO extends DAO {
         $v->setCaixaId($row['caixa_id'] !== null ? (int) $row['caixa_id'] : null);
         $v->setAtendenteId($row['atendente_id']);
         $v->setData(new DateTime($row['data']));
-        $v->setFormaPagamento($row['forma_pagamento'] ?? '');
+        if ($row['forma_pagamento'] !== null) {
+            $v->setFormaPagamento($row['forma_pagamento']);
+        }
         $v->setStatus(StatusVenda::from($row['status']));
         $v->setTotal((float) $row['total']);
         return $v;

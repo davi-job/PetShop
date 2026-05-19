@@ -25,11 +25,11 @@ class AgendamentoController extends Controller {
     private function novo(): void {
         // R4: só atendente e gerente podem criar agendamentos
         $this->requireRole('atendente', 'gerente');
-        $clientes    = (new ClienteDAO())->listar();
-        $servicos    = (new ServicoDAO())->listar();
+        $pets         = (new PetDAO())->listar();
+        $servicos     = (new ServicoDAO())->listar();
         $funcionarios = (new UsuarioDAO())->listar();
         $this->render('agendamentos/form', [
-            'clientes'     => $clientes,
+            'pets'         => $pets,
             'servicos'     => $servicos,
             'funcionarios' => $funcionarios,
         ]);
@@ -78,19 +78,29 @@ class AgendamentoController extends Controller {
     }
 
     private function ver(): void {
-        $agendamento = (new AgendamentoDAO())->buscarPorId((int) $_GET['id']);
-        $itens       = (new AgendamentoServicoDAO())->listarPorAgendamento($agendamento->getId());
+        $agendamento  = (new AgendamentoDAO())->buscarPorId((int) $_GET['id']);
+        $itens        = (new AgendamentoServicoDAO())->listarPorAgendamento($agendamento->getId());
+        $funcionarios = (new UsuarioDAO())->listar();
         $this->render('agendamentos/ver', [
-            'agendamento' => $agendamento,
-            'itens'       => $itens,
+            'agendamento'  => $agendamento,
+            'itens'        => $itens,
+            'funcionarios' => $funcionarios,
         ]);
     }
 
     private function iniciar(): void {
-        $dao         = new AgendamentoDAO();
-        $agendamento = $dao->buscarPorId((int) $_GET['id']);
+        $funcionarioId = (int) $_POST['funcionario_id'];
+
+        $agendamentoDAO = new AgendamentoDAO();
+        $agendamento    = $agendamentoDAO->buscarPorId((int) $_POST['id']);
         $agendamento->iniciar();
-        $dao->atualizar($agendamento);
+        $agendamentoDAO->atualizar($agendamento);
+
+        $asDAO = new AgendamentoServicoDAO();
+        foreach ($asDAO->listarPorAgendamento($agendamento->getId()) as $item) {
+            $item->executar($funcionarioId);
+            $asDAO->atualizar($item);
+        }
 
         $_SESSION['flash'] = 'Agendamento iniciado.';
         $this->redirect('?page=agendamentos&acao=ver&id=' . $agendamento->getId());

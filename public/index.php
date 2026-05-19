@@ -2,6 +2,9 @@
 session_start();
 
 spl_autoload_register(function (string $classe): void {
+    $excecoes = ['Vendas' => 'Venda'];
+    $arquivo_nome = $excecoes[$classe] ?? $classe;
+
     $diretorios = [
         __DIR__ . '/../app/core/',
         __DIR__ . '/../app/model/',
@@ -11,7 +14,7 @@ spl_autoload_register(function (string $classe): void {
         __DIR__ . '/../config/',
     ];
     foreach ($diretorios as $dir) {
-        $arquivo = $dir . $classe . '.php';
+        $arquivo = $dir . $arquivo_nome . '.php';
         if (file_exists($arquivo)) {
             require_once $arquivo;
             return;

@@ -4,13 +4,15 @@ class ItemVendaDAO extends DAO {
 
     public function salvar(ItemVenda $item): void {
         $stmt = $this->conn->prepare(
-            "INSERT INTO item_venda (venda_id, produto_variacao_id, agendamento_servico_id, quantidade, preco_unitario, subtotal)
-             VALUES (?, ?, ?, ?, ?, ?)"
+            "INSERT INTO item_venda (venda_id, produto_variacao_id, agendamento_servico_id, servico_id, porte, quantidade, preco_unitario, subtotal)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
         );
         $stmt->execute([
             $item->getVendaId(),
-            $item->isProduto() ? $item->getProdutoVariacaoId() : null,
-            $item->isServico() ? $item->getAgendamentoServicoId() : null,
+            $item->isProduto()       ? $item->getProdutoVariacaoId()    : null,
+            $item->isServico()       ? $item->getAgendamentoServicoId() : null,
+            $item->isServicoDireto() ? $item->getServicoId()            : null,
+            $item->getPorte()        ? $item->getPorte()->value          : null,
             $item->getQuantidade(),
             $item->getPrecoUnitario(),
             $item->getSubtotal(),
@@ -72,11 +74,15 @@ class ItemVendaDAO extends DAO {
         $i = new ItemVenda();
         $i->setId($row['id']);
         $i->setVendaId($row['venda_id']);
-        if ($row['produto_variacao_id'] !== null) {
+        if (!empty($row['produto_variacao_id'])) {
             $i->setProdutoVariacaoId((int) $row['produto_variacao_id']);
         }
-        if ($row['agendamento_servico_id'] !== null) {
+        if (!empty($row['agendamento_servico_id'])) {
             $i->setAgendamentoServicoId((int) $row['agendamento_servico_id']);
+        }
+        if (!empty($row['servico_id'])) {
+            $i->setServicoId((int) $row['servico_id']);
+            $i->setPorte($row['porte'] ? Porte::from($row['porte']) : null);
         }
         $i->setQuantidade((int) $row['quantidade']);
         $i->setPrecoUnitario((float) $row['preco_unitario']);

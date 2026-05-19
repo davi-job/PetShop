@@ -4,9 +4,9 @@ class AgendamentoServico {
     private int $id;
     private int $agendamentoId;
     private int $servicoId;
-    private int $funcionarioId;
+    private ?int $funcionarioId = null;
     private float $precoCobrado;
-    private string $observacoes;
+    private string $observacoes = '';
 
     public function executar(int $funcionarioId, string $observacoes = '') {
         if (isset($this->funcionarioId)) {
@@ -28,7 +28,7 @@ class AgendamentoServico {
     public function getServicoId(): int { return $this->servicoId; }
     public function setServicoId(int $servicoId): void { $this->servicoId = $servicoId; }
 
-    public function getFuncionarioId(): int { return $this->funcionarioId; }
+    public function getFuncionarioId(): ?int { return $this->funcionarioId; }
 
     public function getPrecoCobrado(): float { return $this->precoCobrado; }
     public function setPrecoCobrado(float $precoCobrado): void { $this->precoCobrado = $precoCobrado; }

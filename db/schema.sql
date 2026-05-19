@@ -157,18 +157,15 @@ CREATE TABLE
         venda_id INT NOT NULL REFERENCES venda (id),
         produto_variacao_id INT REFERENCES produto_variacao (id),
         agendamento_servico_id INT REFERENCES agendamento_servico (id),
+        servico_id INT REFERENCES servico (id),
+        porte porte_enum,
         quantidade INT NOT NULL DEFAULT 1 CHECK (quantidade > 0),
         preco_unitario DECIMAL(10, 2) NOT NULL CHECK (preco_unitario >= 0),
         subtotal DECIMAL(10, 2) NOT NULL CHECK (subtotal >= 0),
         CONSTRAINT chk_item_venda_exclusivo CHECK (
-            (
-                produto_variacao_id IS NOT NULL
-                AND agendamento_servico_id IS NULL
-            )
-            OR (
-                produto_variacao_id IS NULL
-                AND agendamento_servico_id IS NOT NULL
-            )
+            (produto_variacao_id IS NOT NULL AND agendamento_servico_id IS NULL AND servico_id IS NULL)
+            OR (produto_variacao_id IS NULL AND agendamento_servico_id IS NOT NULL AND servico_id IS NULL)
+            OR (produto_variacao_id IS NULL AND agendamento_servico_id IS NULL AND servico_id IS NOT NULL)
         )
     );
 

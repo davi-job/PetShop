@@ -8,7 +8,7 @@ class ServicoPrecoDAO extends DAO {
         );
         $stmt->execute([
             $preco->getServicoId(),
-            $preco->getPorte()->name,
+            $preco->getPorte()->value,
             $preco->getPreco(),
         ]);
     }
@@ -44,7 +44,7 @@ class ServicoPrecoDAO extends DAO {
         );
         $stmt->execute([
             $preco->getServicoId(),
-            $preco->getPorte()->name,
+            $preco->getPorte()->value,
             $preco->getPreco(),
             $preco->getId(),
         ]);

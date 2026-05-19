@@ -24,7 +24,7 @@ class Auth {
         $u = new Usuario();
         $u->setId($_SESSION['usuario_id']);
         $u->setNome($_SESSION['usuario_nome']);
-        $u->setCargo($_SESSION['usuario_cargo']);
+        $u->setCargo(Cargo::{$_SESSION['usuario_cargo']});
         return $u;
     }
 

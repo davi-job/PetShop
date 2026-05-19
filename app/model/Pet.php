@@ -9,7 +9,7 @@ class Pet {
     private Porte $porte;
     private float $peso;
     private DateTime $dataNascimento;
-    private string $observacoes;
+    private string $observacoes = '';
     
     // Getters & Setters
     public function getId(): int { return $this->id; }
