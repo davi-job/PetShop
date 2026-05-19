@@ -71,7 +71,7 @@ CREATE TABLE
 CREATE TABLE
     pet (
         id SERIAL PRIMARY KEY,
-        cliente_id INT NOT NULL REFERENCES cliente (id),
+        cliente_id INT NOT NULL REFERENCES cliente (id) ON DELETE CASCADE,
         nome VARCHAR(100) NOT NULL,
         especie VARCHAR(50) NOT NULL,
         raca VARCHAR(100),
@@ -93,7 +93,7 @@ CREATE TABLE
 CREATE TABLE
     servico_preco (
         id SERIAL PRIMARY KEY,
-        servico_id INT NOT NULL REFERENCES servico (id),
+        servico_id INT NOT NULL REFERENCES servico (id) ON DELETE CASCADE,
         porte porte_enum NOT NULL,
         preco DECIMAL(10, 2) NOT NULL CHECK (preco >= 0),
         UNIQUE (servico_id, porte)
@@ -106,7 +106,7 @@ CREATE TABLE
 CREATE TABLE
     produto_variacao (
         id SERIAL PRIMARY KEY,
-        produto_id INT NOT NULL REFERENCES produto (id),
+        produto_id INT NOT NULL REFERENCES produto (id) ON DELETE CASCADE,
         nome VARCHAR(100),
         preco DECIMAL(10, 2) NOT NULL CHECK (preco >= 0),
         estoque INT NOT NULL DEFAULT 0 CHECK (estoque >= 0)
@@ -116,7 +116,7 @@ CREATE TABLE
 CREATE TABLE
     agendamento (
         id SERIAL PRIMARY KEY,
-        pet_id INT NOT NULL REFERENCES pet (id),
+        pet_id INT NOT NULL REFERENCES pet (id) ON DELETE CASCADE,
         criado_por INT NOT NULL REFERENCES usuario (id),
         data_hora TIMESTAMP NOT NULL,
         status status_agendamento_enum NOT NULL DEFAULT 'marcado',
@@ -144,7 +144,7 @@ CREATE TABLE
 CREATE TABLE
     agendamento_servico (
         id SERIAL PRIMARY KEY,
-        agendamento_id INT NOT NULL REFERENCES agendamento (id),
+        agendamento_id INT NOT NULL REFERENCES agendamento (id) ON DELETE CASCADE,
         servico_id INT NOT NULL REFERENCES servico (id),
         funcionario_id INT REFERENCES usuario (id),
         preco_cobrado DECIMAL(10, 2) NOT NULL CHECK (preco_cobrado >= 0),
@@ -154,7 +154,7 @@ CREATE TABLE
 CREATE TABLE
     item_venda (
         id SERIAL PRIMARY KEY,
-        venda_id INT NOT NULL REFERENCES venda (id),
+        venda_id INT NOT NULL REFERENCES venda (id) ON DELETE CASCADE,
         produto_variacao_id INT REFERENCES produto_variacao (id),
         agendamento_servico_id INT REFERENCES agendamento_servico (id),
         servico_id INT REFERENCES servico (id),
